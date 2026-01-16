@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Leaf, Wallet } from "lucide-react";
@@ -12,6 +13,7 @@ const Header = () => {
     { name: "Features", href: "#features" },
     { name: "Register", href: "#register" },
     { name: "Verify", href: "#verify" },
+    { name: "Dashboard", href: "/dashboard", isRoute: true },
   ];
 
   return (
@@ -36,13 +38,23 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-              >
-                {link.name}
-              </a>
+              link.isRoute ? (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {link.name}
+                </Link>
+              ) : (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {link.name}
+                </a>
+              )
             ))}
           </nav>
 
@@ -73,14 +85,25 @@ const Header = () => {
           >
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2"
-                >
-                  {link.name}
-                </a>
+                link.isRoute ? (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2"
+                  >
+                    {link.name}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2"
+                  >
+                    {link.name}
+                  </a>
+                )
               ))}
               <Button variant="wallet" className="mt-2">
                 <Wallet className="w-4 h-4" />
