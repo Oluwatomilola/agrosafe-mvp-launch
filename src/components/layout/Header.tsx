@@ -2,10 +2,16 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Leaf, Wallet } from "lucide-react";
+import { Menu, X, Leaf, Wallet, Check, LogOut } from "lucide-react";
+import { useWallet } from "@/hooks/use-wallet";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isConnected, address, connect, disconnect } = useWallet();
+
+  const shortAddress = address
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+    : "";
 
   const navLinks = [
     { name: "Home", href: "#home" },
@@ -37,7 +43,7 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {navLinks.map((link) =>
               link.isRoute ? (
                 <Link
                   key={link.name}
@@ -55,15 +61,27 @@ const Header = () => {
                   {link.name}
                 </a>
               )
-            ))}
+            )}
           </nav>
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="wallet" size="lg">
-              <Wallet className="w-4 h-4" />
-              Connect Wallet
-            </Button>
+            {isConnected ? (
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/30">
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-sm font-mono text-foreground">{shortAddress}</span>
+                </div>
+                <Button variant="ghost" size="sm" onClick={disconnect}>
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              <Button variant="wallet" size="lg" onClick={connect}>
+                <Wallet className="w-4 h-4" />
+                Connect Wallet
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -84,7 +102,7 @@ const Header = () => {
             className="md:hidden py-4 border-t border-border/50"
           >
             <div className="flex flex-col gap-4">
-              {navLinks.map((link) => (
+              {navLinks.map((link) =>
                 link.isRoute ? (
                   <Link
                     key={link.name}
@@ -104,11 +122,23 @@ const Header = () => {
                     {link.name}
                   </a>
                 )
-              ))}
-              <Button variant="wallet" className="mt-2">
-                <Wallet className="w-4 h-4" />
-                Connect Wallet
-              </Button>
+              )}
+              {isConnected ? (
+                <div className="flex items-center justify-between mt-2 p-3 rounded-lg bg-primary/10 border border-primary/30">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-mono text-foreground">{shortAddress}</span>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={disconnect}>
+                    <LogOut className="w-4 h-4" />
+                  </Button>
+                </div>
+              ) : (
+                <Button variant="wallet" className="mt-2" onClick={connect}>
+                  <Wallet className="w-4 h-4" />
+                  Connect Wallet
+                </Button>
+              )}
             </div>
           </motion.nav>
         )}
