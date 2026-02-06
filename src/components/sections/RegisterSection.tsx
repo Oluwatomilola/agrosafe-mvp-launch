@@ -6,10 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { UserPlus, Check, Wallet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useWallet } from "@/hooks/use-wallet";
 
 const RegisterSection = () => {
   const { toast } = useToast();
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const { isConnected, address, connect } = useWallet();
   const [formData, setFormData] = useState({
     name: "",
     location: "",
@@ -17,18 +18,13 @@ const RegisterSection = () => {
     crops: "",
   });
 
-  const handleConnect = () => {
-    // Simulated wallet connection
-    setIsWalletConnected(true);
-    toast({
-      title: "Wallet Connected!",
-      description: "Your wallet has been successfully connected.",
-    });
-  };
+  const shortAddress = address
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+    : "";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isWalletConnected) {
+    if (!isConnected) {
       toast({
         title: "Connect Wallet First",
         description: "Please connect your wallet to register as a farmer.",
@@ -93,18 +89,18 @@ const RegisterSection = () => {
             <div className="bg-card rounded-3xl p-8 shadow-lg border border-border/50">
               {/* Wallet Connection */}
               <div className="mb-8">
-                {isWalletConnected ? (
+                {isConnected ? (
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-primary/10 border border-primary/30">
                     <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
                       <Check className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <div>
                       <p className="font-semibold text-foreground">Wallet Connected</p>
-                      <p className="text-sm text-muted-foreground">0x1234...5678</p>
+                      <p className="text-sm text-muted-foreground">{shortAddress}</p>
                     </div>
                   </div>
                 ) : (
-                  <Button variant="wallet" className="w-full" size="lg" onClick={handleConnect}>
+                  <Button variant="wallet" className="w-full" size="lg" onClick={connect}>
                     <Wallet className="w-5 h-5" />
                     Connect Wallet to Register
                   </Button>
