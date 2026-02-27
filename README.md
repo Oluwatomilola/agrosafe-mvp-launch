@@ -1,6 +1,6 @@
 # AgroSafe
 
-A decentralised solution for farmer registration and produce verification using blockchain.
+This is a decentralised solution for farmer registration and produce verification using blockchain.
 
 ## Project Structure
 
